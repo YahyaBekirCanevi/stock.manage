@@ -1,0 +1,36 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: '23'
+
+    - name: Clone private configuration repository
+      run: |
+        git clone https://github.com/YahyaBekirCanevi/stock.manage.config.git config-repo
+      env:
+        GIT_TERMINAL_PROMPT: 0
+
+    - name: Copy application.yml to project
+      run: |
+        cp config-repo/application-stock-manage.yml src/main/resources/application.yml
+
+    - name: Build and Run Tests
+      run: ./gradlew build
+
+    - name: Deploy Application
+      run: |
+        java -jar build/libs/stock.manage-0.0.1-SNAPSHOT.jar
