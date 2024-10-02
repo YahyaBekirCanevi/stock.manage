@@ -1,0 +1,20 @@
+spring:
+  data:
+    couchbase:
+      auto-index=true:
+  couchbase:
+    connection-string: couchbases://cb.jxmwytdq8bs9o40v.cloud.couchbase.com
+    bootstrap-hosts: couchbases://cb.jxmwytdq8bs9o40v.cloud.couchbase.com
+    username: canevi-stock
+    password: HSeTp!aZUtXpS5Qp
+    bucket:
+      name: canevi-stock
+    env:
+      timeouts:
+        connect: 120000
+
+db:
+  host: couchbases://cb.jxmwytdq8bs9o40v.cloud.couchbase.com
+  user: canevi-stock
+  pass: HSeTp!aZUtXpS5Qp
+  nameOfBucket: canevi-stock
