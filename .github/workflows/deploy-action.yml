@@ -24,6 +24,9 @@ jobs:
       env:
         GIT_TERMINAL_PROMPT: 0
 
+    - name: Create resources directory if not exists
+      run: mkdir -p src/main/resources
+      
     - name: Copy application.yml to project
       run: |
         cp config-repo/application-stock-manage.yml src/main/resources/application.yml
