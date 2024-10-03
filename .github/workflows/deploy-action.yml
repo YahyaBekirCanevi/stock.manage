@@ -37,6 +37,16 @@ jobs:
     - name: Build and Run Tests
       run: ./gradlew build
 
-    - name: Deploy Application
-      run: |
-        java -jar build/libs/stock.manage-0.0.1-SNAPSHOT.jar
+    # Docker build and push
+    - name: Log in to Docker Hub
+      run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/stock-manage-app:latest .
+
+    - name: Push Docker image to Docker Hub
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/stock-manage-app:latest
+
+    # - name: Deploy Application
+    #   run: |
+    #     java -jar build/libs/stock.manage-0.0.1-SNAPSHOT.jar
