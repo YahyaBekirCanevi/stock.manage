@@ -31,6 +31,9 @@ jobs:
       run: |
         cp config-repo/application-stock-manage.yml src/main/resources/application.yml
 
+    - name: Grant execute permission to gradlew
+      run: chmod +x ./gradlew
+      
     - name: Build and Run Tests
       run: ./gradlew build
 
