@@ -15,6 +15,6 @@ class ProductService(private val productRepository: ProductRepository) {
     }
 
     fun findProductsByName(name: String): List<Product> {
-        return productRepository.findByName(name)
+        return productRepository.findByNameLike("%$name%")
     }
 }
