@@ -10,7 +10,8 @@ class ProductService(private val productRepository: ProductRepository) {
     }
 
     fun addProduct(product: Product): Product {
-        return productRepository.save(product)
+        val newProduct = Product(name = product.name, quantity = product.quantity)
+        return productRepository.save(newProduct)
     }
 
     fun findProductsByName(name: String): List<Product> {
