@@ -23,8 +23,17 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("io.github.resilience4j:resilience4j-spring-boot3:2.0.2")
+	implementation("io.github.resilience4j:resilience4j-ratelimiter:2.0.2")
+	implementation("io.github.resilience4j:resilience4j-retry:2.2.0")
+	implementation("io.github.resilience4j:resilience4j-circuitbreaker:2.2.0")
+	implementation("org.springframework.boot:spring-boot-starter-aop")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.springframework:spring-tx")
+	testImplementation("com.ninja-squad:springmockk:4.0.2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

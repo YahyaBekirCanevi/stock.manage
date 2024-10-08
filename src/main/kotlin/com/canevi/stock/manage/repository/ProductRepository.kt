@@ -1,5 +1,6 @@
-package com.canevi.stock.manage.product
+package com.canevi.stock.manage.repository
 
+import com.canevi.stock.manage.document.Product
 import org.springframework.data.couchbase.repository.CouchbaseRepository
 import org.springframework.data.couchbase.repository.Query
 

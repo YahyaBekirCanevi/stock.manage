@@ -1,4 +1,5 @@
-package com.canevi.stock.manage.product
+package com.canevi.stock.manage.document
+
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.couchbase.core.mapping.Document
@@ -8,13 +9,11 @@ import org.springframework.data.couchbase.repository.Scope
 import java.util.*
 
 @Document
-@Collection("product")
+@Collection("category")
 @Scope("inventory")
-data class Product(
+data class Category(
     @Id
     val id: String = UUID.randomUUID().toString(),
     @Field
-    val name: String,
-    @Field
-    val quantity: Int
+    val name: String
 )
