@@ -20,8 +20,8 @@ class CategoryController(private val categoryService: CategoryService) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.addCategory(category))
     }
 
-    @GetMapping("/{name}")
-    fun findCategory(@PathVariable("name") name: String): ResponseEntity<Category> {
+    @GetMapping("/search")
+    fun findCategory(@RequestParam("name") name: String): ResponseEntity<List<Category>> {
         return ResponseEntity.ok(categoryService.findCategory(name))
     }
 

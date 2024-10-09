@@ -1,18 +1,16 @@
 package com.canevi.stock.manage.service
 
-import com.canevi.stock.manage.config.exception.ResourceNotFoundException
 import com.canevi.stock.manage.document.Category
 import com.canevi.stock.manage.repository.CategoryRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CategoryServiceTest {
-    private val categoryRepository: CategoryRepository = mockk();
-    private val categoryService = CategoryService(categoryRepository);
+    private val categoryRepository: CategoryRepository = mockk()
+    private val categoryService = CategoryService(categoryRepository)
 
     private val category = Category(name = "Food")
 
@@ -38,21 +36,12 @@ class CategoryServiceTest {
 
     @Test
     fun findCategory() {
-        every { categoryRepository.findByName(category.name) } returns category
+        every { categoryRepository.findByNameLike(category.name) } returns listOf(category)
 
         val result = categoryService.findCategory(category.name)
 
-        verify(exactly = 1) { categoryRepository.findByName(category.name) }
-        assertEquals(result, category)
-    }
-
-    @Test
-    fun findCategory_case_null() {
-        every { categoryRepository.findByName(category.name) } returns null
-
-        assertThrows<ResourceNotFoundException> { categoryService.findCategory(category.name) }
-
-        verify(exactly = 1) { categoryRepository.findByName(category.name) }
+        verify(exactly = 1) { categoryRepository.findByNameLike(category.name) }
+        assertEquals(result[0], category)
     }
 
     @Test
