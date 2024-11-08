@@ -2,9 +2,7 @@ package com.canevi.stock.manage.service
 
 import com.canevi.stock.manage.config.exception.ResourceNotFoundException
 import com.canevi.stock.manage.document.Category
-import com.canevi.stock.manage.document.ProductCategory
 import com.canevi.stock.manage.repository.CategoryRepository
-import com.canevi.stock.manage.repository.ProductCategoryRepository
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows

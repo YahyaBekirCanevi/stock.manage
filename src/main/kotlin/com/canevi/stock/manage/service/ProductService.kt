@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductService(
-    private val productRepository: ProductRepository,
-    private val productDetailsService: ProductDetailsService
+    private val productRepository: ProductRepository
 ) {
 
     fun getAllProducts(): List<Product> {
@@ -20,15 +19,7 @@ class ProductService(
     @Retry(name = "addProductRetry", fallbackMethod = "retryFallback")
     @Transactional
     fun addProduct(product: Product): Product {
-        val newProduct = Product(name = product.name, quantity = product.quantity)
-        val savedProduct = productRepository.save(newProduct)
-        try {
-            productDetailsService.saveProductDetail(savedProduct.id)
-        } catch (e: Exception) {
-            throw CouldNotSaveException()
-        }
-
-        return savedProduct
+        return productRepository.save(product)
     }
 
     fun retryFallback(product: Product, exception: Exception): Product {

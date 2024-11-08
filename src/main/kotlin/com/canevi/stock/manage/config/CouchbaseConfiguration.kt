@@ -43,13 +43,6 @@ class CouchbaseConfiguration(
         try {
             log.debug("Connecting to Couchbase cluster at $connectionString")
             val cluster = Cluster.connect(connectionString, ClusterOptions.clusterOptions(userName, password))
-            /*
-            * ClusterOptions.clusterOptions( userName, password ).environment { env: ClusterEnvironment.Builder ->
-                        env.applyProfile(
-                            "wan-development"
-                        )
-                    }
-            * */
             cluster.waitUntilReady(Duration.ofSeconds(15))
             return cluster
         } catch (e: UnambiguousTimeoutException) {

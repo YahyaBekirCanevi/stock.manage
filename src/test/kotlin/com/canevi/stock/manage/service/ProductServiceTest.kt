@@ -2,7 +2,6 @@ package com.canevi.stock.manage.service
 
 import com.canevi.stock.manage.config.exception.CouldNotSaveException
 import com.canevi.stock.manage.document.Product
-import com.canevi.stock.manage.document.ProductDetails
 import com.canevi.stock.manage.repository.ProductRepository
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
@@ -13,8 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException
 class ProductServiceTest {
 
     private val productRepository: ProductRepository = mockk(relaxed = true)
-    private val productDetailsService: ProductDetailsService = mockk(relaxed = true)
-    private val productService = ProductService(productRepository, productDetailsService)
+    private val productService = ProductService(productRepository)
 
     private val product = Product(name = "Tomato", quantity = 2)
     private val productDetails = ProductDetails(productId = product.id)

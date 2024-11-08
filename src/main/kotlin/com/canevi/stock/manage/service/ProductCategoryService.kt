@@ -2,32 +2,45 @@ package com.canevi.stock.manage.service
 
 import com.canevi.stock.manage.config.exception.ResourceNotFoundException
 import com.canevi.stock.manage.document.Category
-import com.canevi.stock.manage.document.ProductCategory
 import com.canevi.stock.manage.repository.CategoryRepository
-import com.canevi.stock.manage.repository.ProductCategoryRepository
+import com.canevi.stock.manage.repository.ProductRepository
 import org.springframework.stereotype.Service
 
 @Service
 class ProductCategoryService(
     private val categoryRepository: CategoryRepository,
-    private val productCategoryRepository: ProductCategoryRepository
+    private val productRepository: ProductRepository
 ) {
 
     fun getCategoriesOfProduct(productId: String): List<Category> {
-        val categoryIdList = productCategoryRepository.findAllByProductId(productId)
-        if (categoryIdList.isEmpty())
+        val product = productRepository.findById(productId).get()
+        if (product.categoryIdList.isEmpty())
             throw ResourceNotFoundException("Resource not found")
-        return categoryRepository.findAllByIdIn(categoryIdList.map { it.categoryId })
+
+        return categoryRepository.findAllByIdIn(product.categoryIdList.map { it })
     }
 
     fun addCategoryToProduct(productId: String, categoryId: String) {
-        productCategoryRepository.save(ProductCategory(productId = productId, categoryId = categoryId))
+        val product = productRepository.findById(productId).get()
+        val foundCategoryId = product.categoryIdList.find { id -> categoryId == id  }
+        if (foundCategoryId == null) {
+            return
+        }
+        product.categoryIdList.add(categoryId)
+        productRepository.save(product)
     }
 
     fun removeCategoryFromProduct(productId: String, categoryId: String) {
-        val productCategory = productCategoryRepository.findByProductIdAndCategoryId(productId, categoryId)
-            ?: throw ResourceNotFoundException("Resource not found")
-        productCategoryRepository.delete(productCategory)
+        val product = productRepository.findById(productId).get()
+        if (product.categoryIdList.isEmpty())
+            throw ResourceNotFoundException("Resource not found")
+
+        val foundCategoryId = product.categoryIdList.find { id -> categoryId == id  }
+        if (foundCategoryId == null) {
+            throw ResourceNotFoundException("Resource not found")
+        }
+        product.categoryIdList.remove(foundCategoryId)
+        productRepository.save(product)
     }
 
 }
