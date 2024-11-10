@@ -36,11 +36,11 @@ class CategoryServiceTest {
 
     @Test
     fun findCategory() {
-        every { categoryRepository.findByNameLike(category.name) } returns listOf(category)
+        every { categoryRepository.findByNameLike("%${category.name}%") } returns listOf(category)
 
         val result = categoryService.findCategory(category.name)
 
-        verify(exactly = 1) { categoryRepository.findByNameLike(category.name) }
+        verify(exactly = 1) { categoryRepository.findByNameLike(any()) }
         assertEquals(result[0], category)
     }
 

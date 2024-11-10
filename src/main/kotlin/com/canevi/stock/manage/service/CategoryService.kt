@@ -19,13 +19,11 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
         return categoryRepository.findByNameLike("%$name%")
     }
 
-    fun deleteCategory(id: String): Boolean {
-        return try {
-            categoryRepository.deleteById(id)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+    fun deleteCategory(id: String): Boolean = try {
+        categoryRepository.deleteById(id)
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
     }
 }
