@@ -6,6 +6,6 @@ import org.springframework.data.couchbase.repository.Query
 
 interface ProductRepository : CouchbaseRepository<Product, String> {
 
-    @Query("#{#n1ql.selectEntity} WHERE name LIKE $1")
+    @Query("#{#n1ql.selectEntity} WHERE LOWER(name) LIKE LOWER(\$1)")
     fun findByNameLike(namePattern: String): List<Product>
 }

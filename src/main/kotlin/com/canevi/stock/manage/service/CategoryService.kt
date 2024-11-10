@@ -16,7 +16,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
     }
 
     fun findCategory(name: String): List<Category> {
-        return categoryRepository.findByNameLike(name)
+        return categoryRepository.findByNameLike("%$name%")
     }
 
     fun deleteCategory(id: String): Boolean {
