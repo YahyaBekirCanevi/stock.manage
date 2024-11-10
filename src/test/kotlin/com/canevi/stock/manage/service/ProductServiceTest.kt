@@ -1,82 +1,61 @@
 package com.canevi.stock.manage.service
 
-import com.canevi.stock.manage.config.exception.CouldNotSaveException
-import com.canevi.stock.manage.document.Product
 import com.canevi.stock.manage.repository.ProductRepository
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.springframework.dao.DataIntegrityViolationException
-
 
 class ProductServiceTest {
-
     private val productRepository: ProductRepository = mockk(relaxed = true)
     private val productService = ProductService(productRepository)
 
-    private val product = Product(name = "Tomato", quantity = 2)
-    private val productDetails = ProductDetails(productId = product.id)
-
     @Test
-    fun getAllProducts() {
+    fun `should return all products`() {
         every { productRepository.findAll() } returns listOf(product)
 
         val result = productService.getAllProducts()
 
-        assertEquals(result[0], product)
+        verify(exactly = 1) { productRepository.findAll() }
+        assertEquals(listOf(product), result)
     }
 
     @Test
-    fun addProduct() {
-        every { productRepository.save(any()) } returns product
-        every { productDetailsService.saveProductDetail(any()) } returns productDetails
+    fun `should save product successfully`() {
+        every { productRepository.save(product) } returns product
 
-        val result = productService.addProduct(product)
+        val savedProduct = productService.addProduct(product)
 
-        verifyOrder {
-            productRepository.save(any())
-            productDetailsService.saveProductDetail(product.id)
-        }
-        assert(result == product)
+        verify(exactly = 1) { productRepository.save(product) }
+        assertEquals(product, savedProduct)
     }
 
     @Test
-    fun `should retry and throw CouldNotSaveException if saveProductDetail fails`() {
-        every { productRepository.save(any()) } returns product
-        every { productDetailsService.saveProductDetail(any()) } throws DataIntegrityViolationException("Product detail save failed")
+    fun `should find products by name`() {
+        every { productRepository.findByNameLike("%Tomato%") } returns listOf(product)
 
-        assertThrows(CouldNotSaveException::class.java) {
-            productService.addProduct(product)
-        }
+        val result = productService.findProductsByName("Tomato")
 
-        verify(exactly = 1) { productDetailsService.saveProductDetail(product.id) }
-        verify(exactly = 1) { productRepository.save(any()) }
+        verify(exactly = 1) { productRepository.findByNameLike("%Tomato%") }
+        assertEquals(listOf(product), result)
     }
 
     @Test
-    fun findProductsByName() {
-        every { productRepository.findByNameLike(any()) } returns listOf(product)
-
-        productService.findProductsByName(product.name)
-
-        verify(exactly = 1) { productRepository.findByNameLike(any()) }
-    }
-
-    @Test
-    fun deleteProduct() {
-        every { productRepository.deleteById(any()) } just runs
+    fun `should delete product successfully`() {
+        every { productRepository.deleteById(product.id) } just runs
 
         val result = productService.deleteProduct(product.id)
 
-        assertTrue { result }
+        verify(exactly = 1) { productRepository.deleteById(product.id) }
+        assertTrue(result)
     }
 
     @Test
-    fun `should not be successful if deleteProduct fails`() {
-        every { productRepository.deleteById(any()) } throws DataIntegrityViolationException("Product delete failed")
+    fun `should return false when deleteProduct fails`() {
+        every { productRepository.deleteById(product.id) } throws RuntimeException("Delete failed")
 
         val result = productService.deleteProduct(product.id)
 
-        assertFalse { result }
+        verify(exactly = 1) { productRepository.deleteById(product.id) }
+        assertFalse(result)
     }
 }

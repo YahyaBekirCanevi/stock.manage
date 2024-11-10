@@ -11,32 +11,24 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val productRepository: ProductRepository
 ) {
-
-    fun getAllProducts(): List<Product> {
-        return productRepository.findAll().toList()
-    }
+    fun getAllProducts(): List<Product> = productRepository.findAll().toList()
 
     @Retry(name = "addProductRetry", fallbackMethod = "retryFallback")
     @Transactional
     fun addProduct(product: Product): Product {
         return productRepository.save(product)
     }
-
     fun retryFallback(product: Product, exception: Exception): Product {
         throw CouldNotSaveException("Retries exhausted: ${exception.message}")
     }
+    fun findProductsByName(name: String): List<Product>
+        = productRepository.findByNameLike("%$name%")
 
-    fun findProductsByName(name: String): List<Product> {
-        return productRepository.findByNameLike("%$name%")
-    }
-
-    fun deleteProduct(id: String): Boolean {
-        return try {
-            productRepository.deleteById(id)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+    fun deleteProduct(id: String): Boolean = try {
+        productRepository.deleteById(id)
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
     }
 }
