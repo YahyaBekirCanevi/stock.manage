@@ -6,25 +6,25 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/product/category")
+@RequestMapping("/product/{productId}/category")
 class ProductCategoryController(private val productCategoryService: ProductCategoryService) {
 
     @GetMapping
-    fun getCategoriesOfProduct(@RequestParam("productId") productId: String): ResponseEntity<List<Category>> {
+    fun getCategoriesOfProduct(@PathVariable("productId") productId: String): ResponseEntity<List<Category>> {
         val categories = productCategoryService.getCategoriesOfProduct(productId)
         return ResponseEntity.ok(categories)
     }
 
     @PostMapping
-    fun addCategoryToProduct(@RequestParam("productId") productId: String,
-                             @RequestParam("categoryId") categoryId: String): ResponseEntity<String> {
-        productCategoryService.addCategoryToProduct(productId, categoryId)
+    fun addCategoriesToProduct(@PathVariable("productId") productId: String,
+                               @RequestBody categories: List<String>): ResponseEntity<String> {
+        productCategoryService.addCategoryToProduct(productId, categories)
         return ResponseEntity.ok("Successfully added!")
     }
 
-    @DeleteMapping
-    fun removeCategoryFromProduct(@RequestParam("productId") productId: String,
-                                  @RequestParam("categoryId") categoryId: String): ResponseEntity<String> {
+    @DeleteMapping("/{categoryId}")
+    fun removeCategoryFromProduct(@PathVariable("productId") productId: String,
+                                  @PathVariable("categoryId") categoryId: String): ResponseEntity<String> {
         productCategoryService.removeCategoryFromProduct(productId, categoryId)
         return ResponseEntity.ok("Successfully removed!")
     }

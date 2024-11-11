@@ -1,6 +1,5 @@
 package com.canevi.stock.manage.service
 
-import com.canevi.stock.manage.config.exception.CategoryExistsException
 import com.canevi.stock.manage.config.exception.CategoryNotFoundInProductException
 import com.canevi.stock.manage.config.exception.ProductNotFoundException
 import com.canevi.stock.manage.repository.CategoryRepository
@@ -19,12 +18,12 @@ class ProductCategoryServiceTest {
     @Test
     fun `should return categories of product`() {
         every { productRepository.findById(product.id) } returns Optional.of(product)
-        every { categoryRepository.findAllByIdIn(product.categoryIdList) } returns listOf(category)
+        every { categoryRepository.findAllByIdIn(product.categoryIds) } returns listOf(category)
 
         val result = productCategoryService.getCategoriesOfProduct(product.id)
 
         verify(exactly = 1) { productRepository.findById(product.id) }
-        verify(exactly = 1) { categoryRepository.findAllByIdIn(product.categoryIdList) }
+        verify(exactly = 1) { categoryRepository.findAllByIdIn(product.categoryIds) }
         assertEquals(listOf(category), result)
     }
 
@@ -44,24 +43,13 @@ class ProductCategoryServiceTest {
     fun `should add category to product successfully`() {
         every { productRepository.findById(productWithEmptyCategories.id) } returns Optional.of(productWithEmptyCategories)
         every { productRepository.save(productWithEmptyCategories) } returns productWithEmptyCategories
+        every { categoryRepository.findAllByNameIn(any()) } returns listOf(category)
+        every { categoryRepository.save(any()) } returns category
 
-        productCategoryService.addCategoryToProduct(productWithEmptyCategories.id, category.id)
+        productCategoryService.addCategoryToProduct(productWithEmptyCategories.id, listOf(category.id))
 
         verify(exactly = 1) { productRepository.findById(productWithEmptyCategories.id) }
         verify(exactly = 1) { productRepository.save(productWithEmptyCategories) }
-        assertEquals(listOf(category.id), productWithEmptyCategories.categoryIdList)
-    }
-
-    @Test
-    fun `should throw CategoryExistsException when adding existing category to product`() {
-        every { productRepository.findById(product.id) } returns Optional.of(product)
-
-        assertThrows(CategoryExistsException::class.java) {
-            productCategoryService.addCategoryToProduct(product.id, category.id)
-        }
-
-        verify(exactly = 1) { productRepository.findById(product.id) }
-        verify(exactly = 0) { productRepository.save(any()) }
     }
 
     @Test
@@ -73,7 +61,7 @@ class ProductCategoryServiceTest {
 
         verify(exactly = 1) { productRepository.findById(product.id) }
         verify(exactly = 1) { productRepository.save(product) }
-        assert(!product.categoryIdList.contains(category.id))
+        assert(!product.categoryIds.contains(category.id))
     }
 
     @Test

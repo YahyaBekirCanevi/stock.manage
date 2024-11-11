@@ -10,4 +10,6 @@ interface CategoryRepository : CouchbaseRepository<Category, String> {
     fun findByNameLike(name: String): List<Category>
 
     fun findAllByIdIn(categoryIds: List<String>): List<Category>
+
+    fun findAllByNameIn(names: List<String>): List<Category>
 }

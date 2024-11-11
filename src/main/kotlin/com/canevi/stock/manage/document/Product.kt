@@ -5,7 +5,6 @@ import org.springframework.data.couchbase.core.mapping.Document
 import org.springframework.data.couchbase.core.mapping.Field
 import org.springframework.data.couchbase.repository.Collection
 import org.springframework.data.couchbase.repository.Scope
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
@@ -20,9 +19,11 @@ data class Product(
     @Field
     val description: String,
     @Field
-    val price: BigDecimal,
+    val price: Double,
     @Field
-    val categoryIdList: MutableList<String>,
+    val categoryIds: MutableList<String> = mutableListOf(),
+    @Field
+    val imageIds: MutableList<String> = mutableListOf(),
     @Field
     val createdAt: LocalDateTime = LocalDateTime.now(),
     @Field
