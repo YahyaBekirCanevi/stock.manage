@@ -1,5 +1,6 @@
 package com.canevi.stock.manage.config
 
+import com.canevi.stock.manage.config.exception.CouldNotDeleteException
 import com.canevi.stock.manage.config.exception.CouldNotSaveException
 import com.canevi.stock.manage.config.exception.ResourceNotFoundException
 import com.canevi.stock.manage.web.response.ErrorResponse
@@ -34,6 +35,19 @@ class GlobalExceptionHandler {
         val errorResponse = ErrorResponse(
             status = HttpStatus.EXPECTATION_FAILED.value(),
             message = ex.message ?: "Error happened while saving",
+            timestamp = System.currentTimeMillis()
+        )
+        return ResponseEntity(errorResponse, HttpStatus.EXPECTATION_FAILED)
+    }
+    // Handle custom CouldNotSaveException
+    @ExceptionHandler(CouldNotDeleteException::class)
+    fun handleCouldNotDeleteException(
+        ex: CouldNotDeleteException,
+        request: WebRequest
+    ): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(
+            status = HttpStatus.EXPECTATION_FAILED.value(),
+            message = ex.message ?: "Error happened while deleting",
             timestamp = System.currentTimeMillis()
         )
         return ResponseEntity(errorResponse, HttpStatus.EXPECTATION_FAILED)

@@ -7,12 +7,12 @@ data class ProductDTO(
     val name: String,
     val description: String,
     val price: Double,
-    val categories: MutableList<String> = mutableListOf(),
-    val images: MutableList<ByteArray> = mutableListOf()
+    val categories: List<String> = listOf(),
+    val images: List<ByteArray> = listOf()
 ) {
     companion object {
         fun mapProductToProductDTO(
-            product: Product, categories: MutableList<String>, images: MutableList<ByteArray>
+            product: Product, categories: List<String>, images: List<ByteArray>
         ): ProductDTO = ProductDTO(
             id = product.id,
             name = product.name,

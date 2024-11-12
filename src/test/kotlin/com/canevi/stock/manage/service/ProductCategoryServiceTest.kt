@@ -46,7 +46,7 @@ class ProductCategoryServiceTest {
         every { categoryRepository.findAllByNameIn(any()) } returns listOf(category)
         every { categoryRepository.save(any()) } returns category
 
-        productCategoryService.addCategoryToProduct(productWithEmptyCategories.id, listOf(category.id))
+        productCategoryService.addCategoriesToProduct(productWithEmptyCategories.id, listOf(category.id))
 
         verify(exactly = 1) { productRepository.findById(productWithEmptyCategories.id) }
         verify(exactly = 1) { productRepository.save(productWithEmptyCategories) }

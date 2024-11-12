@@ -18,7 +18,7 @@ class ProductCategoryController(private val productCategoryService: ProductCateg
     @PostMapping
     fun addCategoriesToProduct(@PathVariable("productId") productId: String,
                                @RequestBody categories: List<String>): ResponseEntity<String> {
-        productCategoryService.addCategoryToProduct(productId, categories)
+        productCategoryService.addCategoriesToProduct(productId, categories)
         return ResponseEntity.ok("Successfully added!")
     }
 

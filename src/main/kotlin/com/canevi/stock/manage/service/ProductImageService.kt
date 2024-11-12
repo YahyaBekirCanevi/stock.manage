@@ -3,6 +3,7 @@ package com.canevi.stock.manage.service
 import com.canevi.stock.manage.config.exception.ImageNotFoundException
 import com.canevi.stock.manage.config.exception.ProductNotFoundException
 import com.canevi.stock.manage.document.Image
+import com.canevi.stock.manage.document.Product
 import com.canevi.stock.manage.repository.ImageRepository
 import com.canevi.stock.manage.repository.ProductRepository
 import org.springframework.stereotype.Service
@@ -19,21 +20,34 @@ class ProductImageService(
         }
         return imageRepository.findAllByProductId(productId)
     }
-    fun addImageToProduct(productId: String, imageBytes: ByteArray): Image {
+    fun addImageToProduct(productId: String, imageBytesList: List<ByteArray>): List<ByteArray> {
         val product = productRepository.findById(productId)
             .orElseThrow { ProductNotFoundException(productId) }
-        val image = Image(
-            id = UUID.randomUUID().toString(),
-            productId = productId,
-            imageData = imageBytes
-        )
-        imageRepository.save(image)
-        product.imageIds.add(image.id)
+        val images = imageBytesList.map {
+            Image(
+                id = UUID.randomUUID().toString(),
+                productId = productId,
+                imageData = it
+            )
+        }.toList()
+        imageRepository.saveAll(images)
+        product.imageIds.addAll(images.map { it.id })
         productRepository.save(product)
-
-        return image
+        return images.map { it.imageData }.toList()
     }
-    fun deleteImageFromProduct(productId: String, imageId: String) {
+    fun deleteAllImagesOfProduct(productId: String) : Product {
+        val product = productRepository.findById(productId)
+            .orElseThrow { ProductNotFoundException(productId) }
+        val images = imageRepository.findAllByProductId(productId)
+        val falseImages = images.filterNot { it.productId != productId }
+        if (falseImages.isNotEmpty()) {
+            throw IllegalArgumentException("Images does not belong to product $productId :${falseImages.map { "\n - ${it.id}" }}")
+        }
+        imageRepository.deleteAll(images)
+        product.imageIds.removeAll(images.map { it.id })
+        return productRepository.save(product)
+    }
+    fun deleteImageFromProduct(productId: String, imageId: String) : Product {
         val product = productRepository.findById(productId)
             .orElseThrow { ProductNotFoundException(productId) }
         val image = imageRepository.findById(imageId)
@@ -43,6 +57,6 @@ class ProductImageService(
         }
         imageRepository.delete(image)
         product.imageIds.remove(imageId)
-        productRepository.save(product)
+        return productRepository.save(product)
     }
 }
