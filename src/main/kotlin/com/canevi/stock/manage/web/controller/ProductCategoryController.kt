@@ -1,6 +1,5 @@
 package com.canevi.stock.manage.web.controller
 
-import com.canevi.stock.manage.document.Category
 import com.canevi.stock.manage.service.ProductCategoryService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,9 +9,11 @@ import org.springframework.web.bind.annotation.*
 class ProductCategoryController(private val productCategoryService: ProductCategoryService) {
 
     @GetMapping
-    fun getCategoriesOfProduct(@PathVariable("productId") productId: String): ResponseEntity<List<Category>> {
+    fun getCategoriesOfProduct(@PathVariable("productId") productId: String): ResponseEntity<Map<String, String>> {
         val categories = productCategoryService.getCategoriesOfProduct(productId)
-        return ResponseEntity.ok(categories)
+        val categoryMap = mutableMapOf<String, String>()
+        categories.forEach { categoryMap[it.id] = it.name }
+        return ResponseEntity.ok(categoryMap)
     }
 
     @PostMapping
