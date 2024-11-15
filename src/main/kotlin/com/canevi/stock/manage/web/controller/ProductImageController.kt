@@ -1,9 +1,9 @@
 package com.canevi.stock.manage.web.controller
 
 import com.canevi.stock.manage.service.ProductImageService
+import com.canevi.stock.manage.web.dto.ImageDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @RestController
 @RequestMapping("/products/{productId}/images")
@@ -11,18 +11,15 @@ class ProductImageController(
     private val productImageService: ProductImageService
 ) {
     @GetMapping
-    fun getImagesForProduct(@PathVariable("productId") productId: String): ResponseEntity<Map<String, String>> {
+    fun getImagesForProduct(@PathVariable("productId") productId: String): ResponseEntity<List<ImageDTO>> {
         val images = productImageService.getImagesForProduct(productId)
-        val imageMap = mutableMapOf<String, String>()
-        images.forEach { imageMap[it.id] = Base64.getEncoder().encodeToString(it.imageData) }
-        return ResponseEntity.ok(imageMap)
+        return ResponseEntity.ok(images)
     }
     @PostMapping
-    fun addImageToProduct(@PathVariable("productId") productId: String,
-                          @RequestBody imageFile: String): ResponseEntity<Void> {
-        val imageBytes: ByteArray = Base64.getDecoder().decode(imageFile)
-        productImageService.addImageToProduct(productId, listOf(imageBytes))
-        return ResponseEntity.noContent().build()
+    fun addImagesToProduct(@PathVariable("productId") productId: String,
+                          @RequestBody imageFiles: List<ImageDTO>): ResponseEntity<String> {
+        productImageService.addImageToProduct(productId, imageFiles)
+        return ResponseEntity.ok("${imageFiles.size} images added to $productId")
     }
     @DeleteMapping("/{imageId}")
     fun deleteImageFromProduct(@PathVariable("productId") productId: String,

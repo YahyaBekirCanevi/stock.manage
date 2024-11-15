@@ -12,10 +12,13 @@ class ProductCategoryService(
     private val categoryRepository: CategoryRepository,
     private val productRepository: ProductRepository
 ) {
-    fun getCategoriesOfProduct(productId: String): List<Category> {
+    fun getCategoriesOfProduct(productId: String): Map<String, String> {
         val product = productRepository.findById(productId)
             .orElseThrow { ProductNotFoundException(productId) }
-        return categoryRepository.findAllByIdIn(product.categoryIds.map { it })
+        val categories = categoryRepository.findAllByIdIn(product.categoryIds.toList())
+        val categoryMap = mutableMapOf<String, String>()
+        categories.forEach { categoryMap[it.id] = it.name }
+        return categoryMap
     }
     fun addCategoriesToProduct(productId: String, categories: List<String>) {
         val product = productRepository.findById(productId).orElseThrow { ProductNotFoundException(productId) }

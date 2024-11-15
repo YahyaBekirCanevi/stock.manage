@@ -8,11 +8,11 @@ data class ProductDTO(
     val description: String,
     val price: Double,
     val categories: List<String> = listOf(),
-    val images: List<ByteArray> = listOf()
+    val images: List<ImageDTO> = listOf()
 ) {
     companion object {
         fun mapProductToProductDTO(
-            product: Product, categories: List<String>, images: List<ByteArray>
+            product: Product, categories: List<String>, images: List<ImageDTO>
         ): ProductDTO = ProductDTO(
             id = product.id,
             name = product.name,

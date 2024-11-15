@@ -2,10 +2,10 @@ package com.canevi.stock.manage.service
 
 import com.canevi.stock.manage.config.exception.ImageNotFoundException
 import com.canevi.stock.manage.config.exception.ProductNotFoundException
-import com.canevi.stock.manage.document.Image
 import com.canevi.stock.manage.document.Product
 import com.canevi.stock.manage.repository.ImageRepository
 import com.canevi.stock.manage.repository.ProductRepository
+import com.canevi.stock.manage.web.dto.ImageDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,15 +13,15 @@ class ProductImageService(
     private val productRepository: ProductRepository,
     private val imageRepository: ImageRepository
 ) {
-    fun getImagesForProduct(productId: String): List<Image> {
+    fun getImagesForProduct(productId: String): List<ImageDTO> {
         if (!productRepository.existsById(productId)) {
             throw ProductNotFoundException(productId)
         }
-        return imageRepository.findAllByProductId(productId)
+        return imageRepository.findAllByProductId(productId).map { ImageDTO.mapModelToDTO(it) }
     }
-    fun addImageToProduct(productId: String, imageBytesList: List<ByteArray>) {
+    fun addImageToProduct(productId: String, imageFiles: List<ImageDTO>) {
         val product = productRepository.findById(productId).orElseThrow { ProductNotFoundException(productId) }
-        val imageIds = imageBytesList.map { imageRepository.save(Image(productId = productId, imageData = it)).id }
+        val imageIds = imageFiles.map { imageRepository.save(ImageDTO.mapToNewModel(it)).id }
         product.imageIds.addAll(imageIds)
         productRepository.save(product)
     }

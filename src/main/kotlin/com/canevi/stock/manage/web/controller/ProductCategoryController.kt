@@ -11,9 +11,7 @@ class ProductCategoryController(private val productCategoryService: ProductCateg
     @GetMapping
     fun getCategoriesOfProduct(@PathVariable("productId") productId: String): ResponseEntity<Map<String, String>> {
         val categories = productCategoryService.getCategoriesOfProduct(productId)
-        val categoryMap = mutableMapOf<String, String>()
-        categories.forEach { categoryMap[it.id] = it.name }
-        return ResponseEntity.ok(categoryMap)
+        return ResponseEntity.ok(categories)
     }
 
     @PostMapping

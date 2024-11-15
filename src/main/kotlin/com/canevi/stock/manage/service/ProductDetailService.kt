@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ProductOrchestrationService(
+class ProductDetailService(
     private val productService: ProductService,
     private val productCategoryService: ProductCategoryService,
     private val productImageService: ProductImageService
@@ -20,15 +20,15 @@ class ProductOrchestrationService(
         val product = productService.getProduct(productId)
         val categories = productCategoryService.getCategoriesOfProduct(product.id)
         val images = productImageService.getImagesForProduct(product.id)
-        return ProductDTO.mapProductToProductDTO(product, categories.map { it.name }, images.map { it.imageData })
+        return ProductDTO.mapProductToProductDTO(product, categories.values.toList(), images)
     }
-    fun readProductRetryFallback(product: ProductDTO, exception: Exception): ProductDTO {
+    fun readProductRetryFallback(productId: String, exception: Exception): ProductDTO {
         throw ResourceNotFoundException("Retries exhausted: ${exception.message}")
     }
 
     @Retry(name = "createProductRetry", fallbackMethod = "createProductRetryFallback")
     @Transactional
-    fun createProduct(productDTO: ProductDTO): ProductDTO {
+    fun createProduct(productDTO: ProductDTO): String {
         val product = productService.addProduct(Product(
             name = productDTO.name,
             description = productDTO.description,
@@ -36,9 +36,9 @@ class ProductOrchestrationService(
         ))
         productCategoryService.addCategoriesToProduct(product.id, productDTO.categories)
         productImageService.addImageToProduct(product.id, productDTO.images)
-        return ProductDTO.mapProductToProductDTO(product, productDTO.categories, productDTO.images)
+        return product.id
     }
-    fun createProductRetryFallback(product: ProductDTO, exception: Exception): ProductDTO {
+    fun createProductRetryFallback(productDTO: ProductDTO, exception: Exception): ProductDTO {
         throw CouldNotSaveException("Retries exhausted: ${exception.message}")
     }
 
