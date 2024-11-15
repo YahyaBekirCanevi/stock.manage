@@ -1,7 +1,6 @@
 package com.canevi.stock.manage.web.controller
 
 import com.canevi.stock.manage.service.ProductImageService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -20,10 +19,10 @@ class ProductImageController(
     }
     @PostMapping
     fun addImageToProduct(@PathVariable("productId") productId: String,
-                          @RequestBody imageFile: String): ResponseEntity<List<ByteArray>> {
+                          @RequestBody imageFile: String): ResponseEntity<Void> {
         val imageBytes: ByteArray = Base64.getDecoder().decode(imageFile)
-        val images = productImageService.addImageToProduct(productId, listOf(imageBytes))
-        return ResponseEntity.status(HttpStatus.CREATED).body(images)
+        productImageService.addImageToProduct(productId, listOf(imageBytes))
+        return ResponseEntity.noContent().build()
     }
     @DeleteMapping("/{imageId}")
     fun deleteImageFromProduct(@PathVariable("productId") productId: String,
