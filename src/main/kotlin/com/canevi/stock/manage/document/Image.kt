@@ -3,12 +3,13 @@ package com.canevi.stock.manage.document
 import org.springframework.data.couchbase.core.mapping.Document
 import org.springframework.data.couchbase.repository.Collection
 import org.springframework.data.couchbase.repository.Scope
+import java.util.*
 
 @Document
 @Collection("product_image")
 @Scope("inventory")
 data class Image(
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     val productId: String,
     val imageData: ByteArray
 ) {

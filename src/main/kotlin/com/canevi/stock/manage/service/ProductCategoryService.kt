@@ -17,17 +17,14 @@ class ProductCategoryService(
             .orElseThrow { ProductNotFoundException(productId) }
         return categoryRepository.findAllByIdIn(product.categoryIds.map { it })
     }
-    fun addCategoriesToProduct(productId: String, categories: List<String>): List<String> {
-        val product = productRepository.findById(productId)
-            .orElseThrow { ProductNotFoundException(productId) }
+    fun addCategoriesToProduct(productId: String, categories: List<String>) {
+        val product = productRepository.findById(productId).orElseThrow { ProductNotFoundException(productId) }
         val existingCategories = categoryRepository.findAllByNameIn(categories).associateBy { it.name }
         val newCategories = categories.filterNot { existingCategories.containsKey(it) }
             .map { categoryRepository.save(Category(name = it)) }
         val categoryList = existingCategories.values + newCategories
-        val categoryIds = categoryList.map { it.id }
-        product.categoryIds.addAll(categoryIds)
+        product.categoryIds.addAll(categoryList.map { it.id })
         productRepository.save(product)
-        return categoryList.map { it.name }.toList()
     }
     fun removeCategoryFromProduct(productId: String, categoryId: String) {
         val product = productRepository.findById(productId)

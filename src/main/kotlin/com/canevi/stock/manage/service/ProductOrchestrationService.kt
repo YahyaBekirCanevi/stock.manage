@@ -34,9 +34,9 @@ class ProductOrchestrationService(
             description = productDTO.description,
             price = productDTO.price
         ))
-        val categories = productCategoryService.addCategoriesToProduct(product.id, productDTO.categories)
-        val images = productImageService.addImageToProduct(product.id, productDTO.images)
-        return ProductDTO.mapProductToProductDTO(product, categories, images)
+        productCategoryService.addCategoriesToProduct(product.id, productDTO.categories)
+        productImageService.addImageToProduct(product.id, productDTO.images)
+        return ProductDTO.mapProductToProductDTO(product, productDTO.categories, productDTO.images)
     }
     fun createProductRetryFallback(product: ProductDTO, exception: Exception): ProductDTO {
         throw CouldNotSaveException("Retries exhausted: ${exception.message}")

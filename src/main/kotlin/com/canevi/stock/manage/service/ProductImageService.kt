@@ -7,7 +7,6 @@ import com.canevi.stock.manage.document.Product
 import com.canevi.stock.manage.repository.ImageRepository
 import com.canevi.stock.manage.repository.ProductRepository
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class ProductImageService(
@@ -20,20 +19,11 @@ class ProductImageService(
         }
         return imageRepository.findAllByProductId(productId)
     }
-    fun addImageToProduct(productId: String, imageBytesList: List<ByteArray>): List<ByteArray> {
-        val product = productRepository.findById(productId)
-            .orElseThrow { ProductNotFoundException(productId) }
-        val images = imageBytesList.map {
-            Image(
-                id = UUID.randomUUID().toString(),
-                productId = productId,
-                imageData = it
-            )
-        }.toList()
-        imageRepository.saveAll(images)
-        product.imageIds.addAll(images.map { it.id })
+    fun addImageToProduct(productId: String, imageBytesList: List<ByteArray>) {
+        val product = productRepository.findById(productId).orElseThrow { ProductNotFoundException(productId) }
+        val imageIds = imageBytesList.map { imageRepository.save(Image(productId = productId, imageData = it)).id }
+        product.imageIds.addAll(imageIds)
         productRepository.save(product)
-        return images.map { it.imageData }.toList()
     }
     fun deleteAllImagesOfProduct(productId: String) : Product {
         val product = productRepository.findById(productId)

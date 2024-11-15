@@ -28,4 +28,8 @@ data class Product(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     @Field
     val updatedAt: LocalDateTime = LocalDateTime.now()
-)
+) {
+    override fun toString(): String {
+        return "Product(id='$id', name='$name', description='$description', price=$price, categoryIds=$categoryIds, imageIds=$imageIds, createdAt=$createdAt, updatedAt=$updatedAt)"
+    }
+}
