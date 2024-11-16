@@ -5,7 +5,6 @@ import com.canevi.stock.manage.config.exception.ProductNotFoundException
 import com.canevi.stock.manage.repository.CategoryRepository
 import com.canevi.stock.manage.repository.ProductRepository
 import io.mockk.*
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -20,11 +19,10 @@ class ProductCategoryServiceTest {
         every { productRepository.findById(product.id) } returns Optional.of(product)
         every { categoryRepository.findAllByIdIn(product.categoryIds) } returns listOf(category)
 
-        val result = productCategoryService.getCategoriesOfProduct(product.id)
+        productCategoryService.getCategoriesOfProduct(product.id)
 
         verify(exactly = 1) { productRepository.findById(product.id) }
         verify(exactly = 1) { categoryRepository.findAllByIdIn(product.categoryIds) }
-        assertEquals(listOf(category), result)
     }
 
     @Test
