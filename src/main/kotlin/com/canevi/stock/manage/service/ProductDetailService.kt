@@ -35,7 +35,7 @@ class ProductDetailService(
             price = productDTO.price
         ))
         productCategoryService.addCategoriesToProduct(product.id, productDTO.categories)
-        productImageService.addImageToProduct(product.id, productDTO.images)
+        //productImageService.addImageToProduct(product.id, productDTO.images)
         return product.id
     }
     fun createProductRetryFallback(productDTO: ProductDTO, exception: Exception): ProductDTO {
