@@ -2,6 +2,7 @@ package com.canevi.stock.manage.service
 
 import com.canevi.stock.manage.config.exception.CategoryNotFoundInProductException
 import com.canevi.stock.manage.config.exception.ProductNotFoundException
+import com.canevi.stock.manage.document.Category
 import com.canevi.stock.manage.repository.CategoryRepository
 import com.canevi.stock.manage.repository.ProductRepository
 import io.mockk.*
@@ -48,6 +49,20 @@ class ProductCategoryServiceTest {
 
         verify(exactly = 1) { productRepository.findById(productWithEmptyCategories.id) }
         verify(exactly = 1) { productRepository.save(productWithEmptyCategories) }
+    }
+
+    @Test
+    fun `should add category to product successfully with an unknown category`() {
+        every { productRepository.findById(productWithEmptyCategories.id) } returns Optional.of(productWithEmptyCategories)
+        every { productRepository.save(productWithEmptyCategories) } returns productWithEmptyCategories
+        every { categoryRepository.findAllByNameIn(any()) } returns listOf(category)
+        every { categoryRepository.save(any()) } returns Category(name = "Unknown")
+
+        productCategoryService.addCategoriesToProduct(productWithEmptyCategories.id, listOf(category.name, "Unknown"))
+
+        verify(exactly = 1) { productRepository.findById(productWithEmptyCategories.id) }
+        verify(exactly = 1) { productRepository.save(productWithEmptyCategories) }
+        verify(exactly = 1) { categoryRepository.save(any()) }
     }
 
     @Test

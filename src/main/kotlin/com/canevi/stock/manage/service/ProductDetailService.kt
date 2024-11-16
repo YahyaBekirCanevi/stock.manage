@@ -34,11 +34,11 @@ class ProductDetailService(
             description = productDTO.description,
             price = productDTO.price
         ))
-        productCategoryService.addCategoriesToProduct(product.id, productDTO.categories)
+        //productCategoryService.addCategoriesToProduct(product.id, productDTO.categories)
         //productImageService.addImageToProduct(product.id, productDTO.images)
         return product.id
     }
-    fun createProductRetryFallback(productDTO: ProductDTO, exception: Exception): ProductDTO {
+    fun createProductRetryFallback(productDTO: ProductDTO, exception: Exception): String {
         throw CouldNotSaveException("Retries exhausted: ${exception.message}")
     }
 
