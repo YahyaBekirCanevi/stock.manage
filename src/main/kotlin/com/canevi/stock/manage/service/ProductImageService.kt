@@ -19,7 +19,7 @@ class ProductImageService(
         }
         return imageRepository.findAllByProductId(productId).map { ImageDTO.mapModelToDTO(it) }
     }
-    fun addImageToProduct(productId: String, imageFiles: List<ImageDTO>) {
+    fun addImagesToProduct(productId: String, imageFiles: List<ImageDTO>) {
         val product = productRepository.findById(productId).orElseThrow { ProductNotFoundException(productId) }
         val imageIds = imageFiles.map { imageRepository.save(ImageDTO.mapToNewModel(it)).id }
         product.imageIds.addAll(imageIds)

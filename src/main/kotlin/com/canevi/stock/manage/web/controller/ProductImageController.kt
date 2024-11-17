@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/products/{productId}/images")
+@RequestMapping("/product/{productId}/images")
 class ProductImageController(
     private val productImageService: ProductImageService
 ) {
@@ -18,7 +18,7 @@ class ProductImageController(
     @PostMapping
     fun addImagesToProduct(@PathVariable("productId") productId: String,
                           @RequestBody imageFiles: List<ImageDTO>): ResponseEntity<String> {
-        productImageService.addImageToProduct(productId, imageFiles)
+        productImageService.addImagesToProduct(productId, imageFiles)
         return ResponseEntity.ok("${imageFiles.size} images added to $productId")
     }
     @DeleteMapping("/{imageId}")
