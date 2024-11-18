@@ -2,15 +2,16 @@ package com.canevi.stock.manage.web.dto
 
 import com.canevi.stock.manage.document.Image
 import java.util.Base64
+import java.util.UUID
 
 data class ImageDTO(
-    val id: String,
+    val id: String?,
     val productId: String,
     val imageData: String
 ) {
     companion object {
         fun mapToModel(dto: ImageDTO) : Image = Image(
-            id = dto.id,
+            id = dto.id ?: UUID.randomUUID().toString(),
             productId = dto.productId,
             imageData = Base64.getDecoder().decode(dto.imageData)
         )
